@@ -16,7 +16,7 @@ DAEMONIZE=""
 
 # The default Python virtual environment is "cowrie-env". If you set the variable
 # COWRIE_VIRTUAL_ENV you can override this
-DEFAULT_VIRTUAL_ENV=cowrie-env
+DEFAULT_VIRTUAL_ENV=venv
 
 first_time_use() {
     echo

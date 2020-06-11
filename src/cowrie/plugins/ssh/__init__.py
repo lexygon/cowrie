@@ -1,0 +1,1 @@
+from .misspell_detector import MisspellDetectorPlugin

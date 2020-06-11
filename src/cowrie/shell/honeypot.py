@@ -13,6 +13,8 @@ from twisted.python import failure, log
 from twisted.python.compat import iterbytes
 
 from cowrie.core.config import CowrieConfig
+from cowrie.core.plugins import PluginManager
+from cowrie.plugins import MisspellDetectorPlugin
 from cowrie.shell import fs
 
 # From Python3.6 we get the new shlex version
@@ -23,8 +25,14 @@ else:
 
 
 class HoneyPotShell(object):
+    plugins = [
+        MisspellDetectorPlugin
+    ]
 
     def __init__(self, protocol, interactive=True, redirect=False):
+        self.plugin_manager = PluginManager()
+        self.plugin_manager.instantiate_plugins(self.plugins, logger=log)
+
         self.protocol = protocol
         self.interactive = interactive
         self.redirect = redirect  # to support output redirection
@@ -38,6 +46,8 @@ class HoneyPotShell(object):
 
     def lineReceived(self, line):
         log.msg(eventid='cowrie.command.input', input=line, format='CMD: %(input)s')
+        self.process_plugins(line)
+
         self.lexer = shlex.shlex(instream=line, punctuation_chars=True, posix=True)
         # Add these special characters that are not in the default lexer
         self.lexer.wordchars += '@%{}=$:+^,()'
@@ -173,6 +183,9 @@ class HoneyPotShell(object):
             self.runCommand()
         else:
             self.showPrompt()
+
+    def process_plugins(self, _input):
+        self.plugin_manager.process_event(_input)
 
     def runCommand(self):
         pp = None

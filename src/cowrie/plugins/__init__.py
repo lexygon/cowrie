@@ -1,0 +1,3 @@
+from .ssh import (
+    MisspellDetectorPlugin
+)
