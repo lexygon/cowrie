@@ -13,9 +13,9 @@ class PluginManager:
         for plugin in plugins:
             self.plugins.append(plugin(**instructions))
 
-    def process_event(self, event):
+    def process_event(self, event, has_failed=False):
         for plugin in self.plugins:
-            plugin.process_event(event)
+            plugin.process_event(event, has_failed=has_failed)
 
 
 class BasePlugin:
@@ -23,5 +23,5 @@ class BasePlugin:
         self.plugin_manager = kwargs.get('plugin_manager')
         self.logger = kwargs.get('logger')
 
-    def process_event(self, event):
+    def process_event(self, event, *args, **kwargs):
         raise NotImplementedError

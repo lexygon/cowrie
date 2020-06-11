@@ -9,12 +9,14 @@ class MisspellDetectorPlugin(BasePlugin):
     def get_input(self, event) -> str:
         return event
 
-    def process_event(self, event):
-        _input = self.get_input(event)
-        exp = shell.from_shell(_input)
-        output = get_output(_input, exp)
-        cmd = Command(exp, output)
-        corrected_cmds = [x.script for x in get_corrected_commands(cmd)]
-        if corrected_cmds:
-            self.logger.msg(eventid='cowrie.command.misspell', input=_input, corrected_commands=corrected_cmds,
-                            format='Misspelled command: %(input)s | Found corrections: %(corrected_commands)s')
+    def process_event(self, event, *args, **kwargs):
+        has_failed = kwargs.get('has_failed')
+        if has_failed:
+            _input = self.get_input(event)
+            exp = shell.from_shell(_input)
+            output = get_output(_input, exp)
+            cmd = Command(exp, output)
+            corrected_cmds = [x.script for x in get_corrected_commands(cmd)]
+            if corrected_cmds:
+                self.logger.msg(eventid='cowrie.command.misspell', input=_input, corrected_commands=corrected_cmds,
+                                format='Misspelled command: %(input)s | Found corrections: %(corrected_commands)s')

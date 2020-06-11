@@ -30,6 +30,7 @@ else:
 
 
 class HoneyPotShell(object):
+    line_for_plugin = None
     plugins = [
         MisspellDetectorPlugin,
         SearchCommandDetectorPlugin,
@@ -58,8 +59,7 @@ class HoneyPotShell(object):
 
     def lineReceived(self, line):
         log.msg(eventid='cowrie.command.input', input=line, format='CMD: %(input)s')
-        self.process_plugins(line)
-
+        self.line_for_plugin = line
         self.lexer = shlex.shlex(instream=line, punctuation_chars=True, posix=True)
         # Add these special characters that are not in the default lexer
         self.lexer.wordchars += '@%{}=$:+^,()'
@@ -191,16 +191,18 @@ class HoneyPotShell(object):
                 self.cmdpending = []
                 self.showPrompt()
                 return
+
         if self.cmdpending:
             self.runCommand()
         else:
             self.showPrompt()
 
-    def process_plugins(self, _input):
-        self.plugin_manager.process_event(_input)
+    def process_plugins(self, _input, has_failed):
+        self.plugin_manager.process_event(_input, has_failed)
 
     def runCommand(self):
         pp = None
+        has_failed = False
 
         def runOrPrompt():
             if self.cmdpending:
@@ -306,12 +308,16 @@ class HoneyPotShell(object):
                     lastpp = pp
             else:
                 log.msg(eventid='cowrie.command.failed', input=' '.join(cmd2), format='Command not found: %(input)s')
+                has_failed = True
                 self.protocol.terminal.write('-bash: {}: command not found\n'.format(cmd['command']).encode('utf8'))
                 runOrPrompt()
                 pp = None  # Got a error. Don't run any piped commands
                 break
         if pp:
             self.protocol.call_command(pp, cmdclass, *cmd_array[0]['rargs'])
+
+        self.process_plugins(self.line_for_plugin, has_failed)
+
 
     def resume(self):
         if self.interactive:

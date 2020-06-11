@@ -8,7 +8,7 @@ class IPAddressUsageDetectorPlugin(BasePlugin):
     def get_input(self, event):
         return event
 
-    def process_event(self, event):
+    def process_event(self, event, *args, **kwargs):
         _input = self.get_input(event)
         ip_addresses = re.findall(self.IP_ADDDRESS_REGEX, _input)
         if ip_addresses:

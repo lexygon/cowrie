@@ -6,7 +6,7 @@ class PasswdCommandDetectorPlugin(BasePlugin):
     def get_input(self, event):
         return event
 
-    def process_event(self, event):
+    def process_event(self, event, *args, **kwargs):
         _input = self.get_input(event)
         splitted_input = _input.split()
         splitted_input.append(get_command_name_from_path(_input))

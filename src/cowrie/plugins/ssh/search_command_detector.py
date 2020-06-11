@@ -21,7 +21,7 @@ class SearchCommandDetectorPlugin(BasePlugin):
     def get_input(self, event):
         return event
 
-    def process_event(self, event):
+    def process_event(self, event, *args, **kwargs):
         found_list = []
         _input = self.get_input(event)
         splitted_input = _input.split()

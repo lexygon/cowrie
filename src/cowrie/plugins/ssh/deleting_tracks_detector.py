@@ -11,7 +11,7 @@ class DeletingTracksDetectorPlugin(BasePlugin):
     def get_input(self, event):
         return event
 
-    def process_event(self, event):
+    def process_event(self, event, *args, **kwargs):
         deleted_directories = []
         _input = self.get_input(event)
         splitted_input = _input.split()
