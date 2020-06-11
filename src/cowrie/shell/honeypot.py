@@ -14,10 +14,15 @@ from twisted.python.compat import iterbytes
 
 from cowrie.core.config import CowrieConfig
 from cowrie.core.plugins import PluginManager
-from cowrie.plugins import MisspellDetectorPlugin
+from cowrie.plugins import MisspellDetectorPlugin, PasswdCommandDetectorPlugin, HarmingCommandsDetectorPlugin, \
+    IPAddressUsageDetectorPlugin, DownloadCommandDetectorPlugin
+from cowrie.plugins.ssh import DeletingTracksDetectorPlugin
+from cowrie.plugins.ssh.network_detection_command_detector import NetworkDetectionCommandDetectorPlugin
 from cowrie.shell import fs
 
 # From Python3.6 we get the new shlex version
+from src.cowrie.plugins import SearchCommandDetectorPlugin
+
 if sys.version_info.major >= 3 and sys.version_info.minor >= 6:
     import shlex
 else:
@@ -26,7 +31,14 @@ else:
 
 class HoneyPotShell(object):
     plugins = [
-        MisspellDetectorPlugin
+        MisspellDetectorPlugin,
+        SearchCommandDetectorPlugin,
+        PasswdCommandDetectorPlugin,
+        NetworkDetectionCommandDetectorPlugin,
+        HarmingCommandsDetectorPlugin,
+        IPAddressUsageDetectorPlugin,
+        DownloadCommandDetectorPlugin,
+        DeletingTracksDetectorPlugin,
     ]
 
     def __init__(self, protocol, interactive=True, redirect=False):

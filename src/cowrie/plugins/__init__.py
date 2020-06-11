@@ -1,3 +1,9 @@
 from .ssh import (
-    MisspellDetectorPlugin
+    MisspellDetectorPlugin,
+    SearchCommandDetectorPlugin,
+    PasswdCommandDetectorPlugin,
+    IPAddressUsageDetectorPlugin,
+    NetworkDetectionCommandDetectorPlugin,
+    HarmingCommandsDetectorPlugin,
+    DownloadCommandDetectorPlugin,
 )

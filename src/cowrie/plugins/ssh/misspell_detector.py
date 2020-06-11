@@ -15,5 +15,6 @@ class MisspellDetectorPlugin(BasePlugin):
         output = get_output(_input, exp)
         cmd = Command(exp, output)
         corrected_cmds = [x.script for x in get_corrected_commands(cmd)]
-        self.logger.msg(eventid='cowrie.command.misspell', input=_input, corrected_commands=corrected_cmds,
-                        format='Misspelled command: %(input)s | Found corrections: %(corrected_commands)s')
+        if corrected_cmds:
+            self.logger.msg(eventid='cowrie.command.misspell', input=_input, corrected_commands=corrected_cmds,
+                            format='Misspelled command: %(input)s | Found corrections: %(corrected_commands)s')

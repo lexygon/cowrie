@@ -1,1 +1,2 @@
-thefuck
+git+git://github.com/lexygon/thefuck.git#egg=thefuck
+requests
